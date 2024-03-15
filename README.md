@@ -3,11 +3,11 @@
 
 ## 1 多关键词查询图书
 
-![chaxun](.\gif\chaxun.gif)
+![chaxun](https://github.com/neverwinHao/library/blob/main/gif/chaxun.gif)
 
 ## 2 添加或删除图书
 
-![chaxun](.\gif\add.gif)
+![chaxun](https://github.com/neverwinHao/library/blob/main/gif/add.gif)
 
 ## 3 ISBN与价格校验
 ![chaxun](https://github.com/neverwinHao/library/blob/main/gif/correct.gif)
