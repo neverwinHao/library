@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="redlib.backend.dao.BorrowsMapper">
+  <resultMap id="BaseResultMap" type="redlib.backend.model.Borrows">
+    <id column="borrow_id" jdbcType="INTEGER" property="borrowId" />
+    <result column="book_id" jdbcType="INTEGER" property="bookId" />
+    <result column="borrow_time" jdbcType="TIMESTAMP" property="borrowTime" />
+    <result column="return_time" jdbcType="TIMESTAMP" property="returnTime" />
+    <result column="borrower" jdbcType="VARCHAR" property="borrower" />
+    <result column="book_name" jdbcType="VARCHAR" property="bookName" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    borrow_id, book_id, borrow_time, return_time, borrower, book_name
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from borrows
+    where borrow_id = #{borrowId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from borrows
+    where borrow_id = #{borrowId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="redlib.backend.model.Borrows">
+    insert into borrows (borrow_id, book_id, borrow_time, 
+      return_time, borrower, book_name
+      )
+    values (#{borrowId,jdbcType=INTEGER}, #{bookId,jdbcType=INTEGER}, #{borrowTime,jdbcType=TIMESTAMP}, 
+      #{returnTime,jdbcType=TIMESTAMP}, #{borrower,jdbcType=VARCHAR}, #{bookName,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="redlib.backend.model.Borrows">
+    insert into borrows
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="borrowId != null">
+        borrow_id,
+      </if>
+      <if test="bookId != null">
+        book_id,
+      </if>
+      <if test="borrowTime != null">
+        borrow_time,
+      </if>
+      <if test="returnTime != null">
+        return_time,
+      </if>
+      <if test="borrower != null">
+        borrower,
+      </if>
+      <if test="bookName != null">
+        book_name,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="borrowId != null">
+        #{borrowId,jdbcType=INTEGER},
+      </if>
+      <if test="bookId != null">
+        #{bookId,jdbcType=INTEGER},
+      </if>
+      <if test="borrowTime != null">
+        #{borrowTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="returnTime != null">
+        #{returnTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="borrower != null">
+        #{borrower,jdbcType=VARCHAR},
+      </if>
+      <if test="bookName != null">
+        #{bookName,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="redlib.backend.model.Borrows">
+    update borrows
+    <set>
+      <if test="bookId != null">
+        book_id = #{bookId,jdbcType=INTEGER},
+      </if>
+      <if test="borrowTime != null">
+        borrow_time = #{borrowTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="returnTime != null">
+        return_time = #{returnTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="borrower != null">
+        borrower = #{borrower,jdbcType=VARCHAR},
+      </if>
+      <if test="bookName != null">
+        book_name = #{bookName,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where borrow_id = #{borrowId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="redlib.backend.model.Borrows">
+    update borrows
+    set book_id = #{bookId,jdbcType=INTEGER},
+      borrow_time = #{borrowTime,jdbcType=TIMESTAMP},
+      return_time = #{returnTime,jdbcType=TIMESTAMP},
+      borrower = #{borrower,jdbcType=VARCHAR},
+      book_name = #{bookName,jdbcType=VARCHAR}
+    where borrow_id = #{borrowId,jdbcType=INTEGER}
+  </update>
+  <!-- 获取名字个数(分页) -->
+  <select id="count" resultType="integer">
+    select count(*)
+    from borrows
+    <where>
+      <if test="borrower != null">
+       and borrower like #{borrower}
+      </if>
+    </where>
+  </select>
+
+  <!-- 获取借阅记录列表(分页) -->
+  <select id="list" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List"/>
+    from borrows
+    <where>
+      <if test="queryDTO.borrower != null">
+        and borrower like #{queryDTO.borrower}
+      </if>
+      <if test="queryDTO.bookName != null">
+        and book_name like #{queryDTO.bookName}
+      </if>
+    </where>
+    limit #{offset}, #{limit}
+  </select>
+
+
+  <!-- 归还图书 -->
+  <select id="getBorrowById" resultMap="BaseResultMap">
+    SELECT borrower, borrow_time, return_time, book_id,book_name
+    FROM borrows
+    WHERE borrow_id = #{borrowId}
+  </select>
+
+  <update id="updateBorrow">
+    UPDATE borrows
+    SET return_time = #{returnTime}
+    WHERE borrow_id = #{borrowId}
+  </update>
+
+  <!-- 批量删除 -->
+  <update id="deleteByCodes">
+    delete from borrows
+    where borrow_id in
+    <foreach item="item" index="index" collection="codeList" open="(" separator="," close=")">
+      #{item}
+    </foreach>
+  </update>
+</mapper>

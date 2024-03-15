@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="redlib.backend.dao.BookInforMapper">
+  <resultMap id="BaseResultMap" type="redlib.backend.model.BookInfor">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="book_name" jdbcType="VARCHAR" property="bookName" />
+    <result column="publishing_house" jdbcType="VARCHAR" property="publishingHouse" />
+    <result column="classification_num" jdbcType="VARCHAR" property="classificationNum" />
+    <result column="ISBN" jdbcType="VARCHAR" property="isbn" />
+    <result column="publish_date" jdbcType="DATE" property="publishDate" />
+    <result column="price" jdbcType="DECIMAL" property="price" />
+    <result column="buy_date" jdbcType="DATE" property="buyDate" />
+    <result column="onshelf" jdbcType="VARCHAR" property="onshelf" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, book_name, publishing_house, classification_num, ISBN, publish_date, price, buy_date,
+    onshelf
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from book_infor
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from book_infor
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="redlib.backend.model.BookInfor">
+    insert into book_infor (id, book_name, publishing_house,
+                            classification_num, ISBN, publish_date,
+                            price, buy_date, onshelf
+    )
+    values (#{id,jdbcType=INTEGER}, #{bookName,jdbcType=VARCHAR}, #{publishingHouse,jdbcType=VARCHAR},
+            #{classificationNum,jdbcType=VARCHAR}, #{isbn,jdbcType=VARCHAR}, #{publishDate,jdbcType=DATE},
+            #{price,jdbcType=DECIMAL}, #{buyDate,jdbcType=DATE}, #{onshelf,jdbcType=VARCHAR}
+           )
+  </insert>
+  <insert id="insertSelective" parameterType="redlib.backend.model.BookInfor">
+    insert into book_infor
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="bookName != null">
+        book_name,
+      </if>
+      <if test="publishingHouse != null">
+        publishing_house,
+      </if>
+      <if test="classificationNum != null">
+        classification_num,
+      </if>
+      <if test="isbn != null">
+        ISBN,
+      </if>
+      <if test="publishDate != null">
+        publish_date,
+      </if>
+      <if test="price != null">
+        price,
+      </if>
+      <if test="buyDate != null">
+        buy_date,
+      </if>
+      <if test="onshelf != null">
+        onshelf,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="bookName != null">
+        #{bookName,jdbcType=VARCHAR},
+      </if>
+      <if test="publishingHouse != null">
+        #{publishingHouse,jdbcType=VARCHAR},
+      </if>
+      <if test="classificationNum != null">
+        #{classificationNum,jdbcType=VARCHAR},
+      </if>
+      <if test="isbn != null">
+        #{isbn,jdbcType=VARCHAR},
+      </if>
+      <if test="publishDate != null">
+        #{publishDate,jdbcType=DATE},
+      </if>
+      <if test="price != null">
+        #{price,jdbcType=DECIMAL},
+      </if>
+      <if test="buyDate != null">
+        #{buyDate,jdbcType=DATE},
+      </if>
+      <if test="onshelf != null">
+        #{onshelf,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="redlib.backend.model.BookInfor">
+    update book_infor
+    <set>
+      <if test="bookName != null">
+        book_name = #{bookName,jdbcType=VARCHAR},
+      </if>
+      <if test="publishingHouse != null">
+        publishing_house = #{publishingHouse,jdbcType=VARCHAR},
+      </if>
+      <if test="classificationNum != null">
+        classification_num = #{classificationNum,jdbcType=VARCHAR},
+      </if>
+      <if test="isbn != null">
+        ISBN = #{isbn,jdbcType=VARCHAR},
+      </if>
+      <if test="publishDate != null">
+        publish_date = #{publishDate,jdbcType=DATE},
+      </if>
+      <if test="price != null">
+        price = #{price,jdbcType=DECIMAL},
+      </if>
+      <if test="buyDate != null">
+        buy_date = #{buyDate,jdbcType=DATE},
+      </if>
+      <if test="onshelf != null">
+        onshelf = #{onshelf,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="redlib.backend.model.BookInfor">
+    update book_infor
+    set book_name = #{bookName,jdbcType=VARCHAR},
+        publishing_house = #{publishingHouse,jdbcType=VARCHAR},
+        classification_num = #{classificationNum,jdbcType=VARCHAR},
+        ISBN = #{isbn,jdbcType=VARCHAR},
+        publish_date = #{publishDate,jdbcType=DATE},
+        price = #{price,jdbcType=DECIMAL},
+        buy_date = #{buyDate,jdbcType=DATE},
+        onshelf = #{onshelf,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+
+  <!-- 获取图书个数(分页) -->
+  <select id="count" resultType="integer">
+    select count(*)
+    from book_infor
+    <where>
+      <if test="bookName != null">
+        and book_name like #{bookName}
+      </if>
+      <if test="publishingHouse != null">
+        and publishing_house like #{publishingHouse}
+      </if>
+    </where>
+  </select>
+
+  <!-- 获取图书(分页) -->
+  <select id="list" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List"/>
+    from book_infor
+    <where>
+      <if test="queryDTO.bookName != null">
+        and book_name like #{queryDTO.bookName}
+      </if>
+      <if test="queryDTO.publishingHouse != null">
+        and publishing_house like #{queryDTO.publishingHouse}
+      </if>
+    </where>
+    limit #{offset}, #{limit}
+  </select>
+
+  <!-- 批量删除 -->
+  <update id="deleteByCodes">
+    delete from book_infor
+    where id in
+    <foreach item="item" index="index" collection="codeList" open="(" separator="," close=")">
+      #{item}
+    </foreach>
+  </update>
+
+
+  <!-- 获取图书id -->
+  <select id="getBookinfoById" resultMap="BaseResultMap">
+    SELECT id,book_name, publishing_house,classification_num,ISBN, publish_date,price,buy_date,onshelf
+    FROM book_infor
+    WHERE id = #{id}
+  </select>
+
+  <!-- 更新在架信息 -->
+  <update id="updateBookinfo">
+    UPDATE book_infor
+    SET onshelf = #{onshelf}
+    WHERE id = #{id}
+  </update>
+
+  <!-- 返回书籍全部信息 -->
+  <select id="selectAll" resultType="redlib.backend.vo.WordCloudVO">
+    SELECT * FROM book_infor
+  </select>
+
+</mapper>
