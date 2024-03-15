@@ -10,3 +10,4 @@
 ![chaxun](.\gif\add.gif)
 
 ## 3 ISBN与价格校验
+![chaxun](https://github.com/neverwinHao/library/blob/main/gif/correct.gif)
